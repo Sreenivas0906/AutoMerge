@@ -47,9 +47,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: 'automatically created pull request'
           commit-message: 'Auto PR automatically created pull request'
-          title: 'automatically Merge automerge to main'
+          title: 'automatically Merge Automerge to main'
           base: main
-          branch: automerge
+          branch: Automerge
           delete-branch: false
           # committer: 'Sreenivas0906@gmail.com'
           author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
