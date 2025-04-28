@@ -2,7 +2,7 @@ name: AutoMergeToMain
 on:
   push:
     branches:
-      - automerge
+      - AutoMerge
     paths:
       - '.github/workflows/AutoMergeToMain.yml'
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for all branches and tags
-          ref: automerge # Checkout the dev branch
+          ref: AutoMerge # Checkout the dev branch
 
       - name: fetch all branches
         run: git fetch --all
@@ -28,18 +28,7 @@ jobs:
         run: |
           git config --global user.name 'Sreenivas0906'
           git config --global user.email 'sreenuk0906@gmail.com'
-
-  # # Determine the target branch name (main or master)
-  #     - name: Determine target branch
-  #       id: get-target-branch
-  #       run: |
-  #         git ls-remote --heads origin main
-  #         if ($LASTEXITCODE -eq 0) {
-  #         echo "TARGET_BRANCH=main" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-  #         } else {
-  #         echo "TARGET_BRANCH=master" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-  #         }
-
+          
 # create pull request
       - name: Create pull request comment
         uses: peter-evans/create-pull-request@v7
@@ -47,9 +36,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: 'automatically created pull request'
           commit-message: 'Auto PR automatically created pull request'
-          title: 'automatically Merge Automerge to main'
+          title: 'automatically Merge AutoMerge to main'
           base: main
-          branch: Automerge
+          branch: AutoMerge
           delete-branch: false
           # committer: 'Sreenivas0906@gmail.com'
           author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
