@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for all branches and tags
-          ref: dev # Checkout the dev branch
+          # ref: dev # Checkout the dev branch
 
       - name: fetch all branches
         run: git fetch --all
@@ -28,11 +28,12 @@ jobs:
         run: |
           git config --global user.name 'Sreenivas0906'
           git config --global user.email 'sreenuk0906@gmail.com'
+
       - name: create pull request new branch
         run: |
           git checkout dev
-          git checkout -b auto-pr1
-          git push origin auto-pr1 --force
+          git checkout -b auto-pr2
+          git push origin auto-pr2 --force
 
 # create pull request
       - name: Create pull request comment
@@ -43,7 +44,7 @@ jobs:
           commit-message: 'Auto PR automatically created pull request'
           title: 'automatically Merge automerge to main'
           base: main
-          branch: auto-pr1
+          branch: auto-pr2
           delete-branch: false
           # committer: 'Sreenivas0906@gmail.com'
 
