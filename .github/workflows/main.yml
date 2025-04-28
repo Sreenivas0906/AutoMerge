@@ -2,7 +2,7 @@ name: AutoMergeToMain
 on:
   push:
     branches:
-      - test
+      - automerge
     paths:
       - 'D:\AutoMerge_Dev\AutoMerge\.github\workflow\AutoMergeToMaster.yml'
   workflow_dispatch:
@@ -47,9 +47,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: 'automatically created pull request'
           commit-message: 'Auto PR automatically created pull request'
-          title: 'automatically Merge test to main'
+          title: 'automatically Merge automerge to main'
           base: main
-          branch: test
+          branch: automerge
           delete-branch: false
           # committer: 'Sreenivas0906@gmail.com'
           author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
