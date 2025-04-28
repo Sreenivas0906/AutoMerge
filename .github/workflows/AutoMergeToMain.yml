@@ -31,8 +31,8 @@ jobs:
       - name: create pull request new branch
         run: |
           git checkout dev
-          git checkout -b auto-pr
-          git push origin auto-pr --force
+          git checkout -b auto-pr1
+          git push origin auto-pr1 --force
 
 # create pull request
       - name: Create pull request comment
@@ -43,7 +43,7 @@ jobs:
           commit-message: 'Auto PR automatically created pull request'
           title: 'automatically Merge automerge to main'
           base: main
-          branch: auto-pr
+          branch: auto-pr1
           delete-branch: false
           # committer: 'Sreenivas0906@gmail.com'
 
