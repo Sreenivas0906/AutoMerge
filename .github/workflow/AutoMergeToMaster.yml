@@ -1,0 +1,55 @@
+name: AutoMergeToMain
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'D:\AutoMerge_Dev\AutoMerge\.github\workflow\AutoMergeToMaster.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags
+          ref: dev # Checkout the dev branch
+
+      - name: fetch all branches
+        run: git fetch --all
+          
+      - name: Configure git
+        run: |
+          git config --global user.name 'Sreenivas0906'
+          git config --global user.email 'sreenuk0906@gmail.com'
+
+  # # Determine the target branch name (main or master)
+  #     - name: Determine target branch
+  #       id: get-target-branch
+  #       run: |
+  #         git ls-remote --heads origin main
+  #         if ($LASTEXITCODE -eq 0) {
+  #         echo "TARGET_BRANCH=main" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+  #         } else {
+  #         echo "TARGET_BRANCH=master" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+  #         }
+
+# create pull request
+      - name: Create pull request comment
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: 'automatically created pull request'
+          commit-message: 'Auto PR automatically created pull request'
+          title: 'automatically Merge dev to main'
+          base: main
+          branch: dev
+          delete-branch: false
+          # committer: 'Sreenivas0906@gmail.com'
+          author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
