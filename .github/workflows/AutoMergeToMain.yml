@@ -4,7 +4,7 @@ on:
     branches:
       - automerge
     paths:
-      - 'D:\AutoMerge_Dev\AutoMerge\.github\workflow\AutoMergeToMaster.yml'
+      - '.github\workflow\AutoMergeToMaster.yml'
   workflow_dispatch:
 
 permissions:
