@@ -29,10 +29,10 @@ jobs:
           git config --global user.name 'Sreenivas0906'
           git config --global user.email 'sreenuk0906@gmail.com'
 
-      - name: create pull request new branch
-        run: |
-          git checkout -b auto-pr5 origin/dev1 # Create a new branch based on dev1
-          git push origin auto-pr5 --force
+      # - name: create pull request new branch
+      #   run: |
+      #     git checkout -b auto-pr5 origin/dev1 # Create a new branch based on dev1
+      #     git push origin auto-pr5 --force
 # create pull request
       - name: Create pull request comment
         uses: peter-evans/create-pull-request@v7
@@ -42,7 +42,7 @@ jobs:
           commit-message: 'Auto PR automatically created pull request'
           title: 'automatically Merge automerge to main'
           base: main
-          branch: auto-pr5
+          branch: dev1
           delete-branch: false
           # committer: 'Sreenivas0906@gmail.com'
           author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
