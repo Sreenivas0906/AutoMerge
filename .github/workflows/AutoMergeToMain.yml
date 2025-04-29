@@ -1,10 +1,9 @@
 name: AutoMergeToMain
+
 on:
   push:
     branches:
-      - automerge
-    paths:
-      - '.github/workflows/AutoMergeToMain.yml'
+      - dev1
   workflow_dispatch:
 
 permissions:
@@ -12,36 +11,29 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto-merge:
+  auto-pr-and-merge:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout dev1 branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for all branches and tags
-          ref: automerge # Checkout the dev branch
+          ref: dev1
 
-      - name: fetch all branches
-        run: git fetch --all
-          
-      - name: Configure git
-        run: |
-          git config --global user.name 'Sreenivas0906'
-          git config --global user.email 'sreenuk0906@gmail.com'
-
-# create pull request
-      - name: Create pull request comment
-        uses: peter-evans/create-pull-request@v7
+      - name: Create PR from dev1 to main
+        id: create_pr
+        uses: repo-sync/pull-request@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: 'automatically created pull request'
-          commit-message: 'Auto PR automatically created pull request'
-          title: 'automatically Merge automerge to main'
-          base: main
-          branch: automerge
-          delete-branch: false
-          # committer: 'Sreenivas0906@gmail.com'
-          author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
-          #added a new line to test the workflow
-          # added a SECOND line to test the workflow
-          # added a THIRD line to test the workflow
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: dev1
+          destination_branch: main
+          pr_title: "Auto PR: Merge dev1 into main"
+          pr_body: "This PR was created automatically by GitHub Actions."
+
+      - name: Auto merge the pull request
+        if: steps.create_pr.outputs.pr_number != ''
+        run: |
+          echo "PR number is: ${{ steps.create_pr.outputs.pr_number }}"
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
