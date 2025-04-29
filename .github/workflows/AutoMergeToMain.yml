@@ -1,4 +1,4 @@
-name: AutoMergeDev1ToMain
+name: Auto PR from dev1 to main
 on:
   push:
     branches:
@@ -10,19 +10,19 @@ permissions:
   pull-requests: write
 
 jobs:
-  create-pull-request:
+  create-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout dev1 branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: dev1
 
-      - name: Create Pull Request
-        uses: devops-infra/action-pull-request@v7
+      - name: Create PR to main
+        uses: repo-sync/pull-request@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: dev1
-          target_branch: main
-          title: "Auto PR: Merge dev1 to main"
-          body: "This PR merges changes from dev1 into main automatically."
+          destination_branch: main
+          pr_title: "Auto PR: Merge dev1 into main"
+          pr_body: "This PR was created automatically by GitHub Actions."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
