@@ -3,7 +3,7 @@ name: AutoMergeToMain
 on:
   push:
     branches:
-      - uat
+      - uat1
     paths:
       - '.github/workflows/AutoMerge.yaml'
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout dev1 branch
         uses: actions/checkout@v4
         with:
-          ref: uat
+          ref: uat1
           fetch-depth: 0
 
       - name: Configure git
@@ -28,14 +28,14 @@ jobs:
           git config --global user.name 'Sreenivas0906'
           git config --global user.email 'sreenuk0906@gmail.com'
 
-      - name: Create PR from uat to main
+      - name: Create PR from uat1 to main
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: uat
+          source_branch: uat1
           destination_branch: main
-          pr_title: "Auto PR: Merge uat into main"
+          pr_title: "Auto PR: Merge uat1 into main"
           pr_body: "This PR was created automatically by GitHub Actions."
 
       - name: Get PR number
