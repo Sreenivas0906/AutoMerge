@@ -1,10 +1,8 @@
-name: AutoMergeToMain
+name: AutoMergeDev1ToMain
 on:
   push:
     branches:
       - dev1
-    paths:
-      - '.github/workflows/AutoMergeToMain.yml'
   workflow_dispatch:
 
 permissions:
@@ -12,41 +10,19 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto-merge:
+  create-pull-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for all branches and tags
-          ref: dev1 # Checkout the dev branch
+          fetch-depth: 0
 
-      - name: fetch all branches
-        run: git fetch --all
-          
-      - name: Configure git
-        run: |
-          git config --global user.name 'Sreenivas0906'
-          git config --global user.email 'sreenuk0906@gmail.com'
-
-      # - name: create pull request new branch
-      #   run: |
-      #     git checkout -b auto-pr5 origin/dev1 # Create a new branch based on dev1
-      #     git push origin auto-pr5 --force
-# create pull request
-      - name: Create pull request comment
-        uses: peter-evans/create-pull-request@v7
+      - name: Create Pull Request
+        uses: devops-infra/action-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: 'automatically created pull request'
-          commit-message: 'Auto PR automatically created pull request'
-          title: 'automatically Merge automerge to main'
-          base: main
-          branch: dev1
-          delete-branch: false
-          # committer: 'Sreenivas0906@gmail.com'
-          author: 'Sreenivas0906 <sreenuk0906@gmail.com>'
-          #added a new line to test the workflow
-          # added a SECOND line to test the workflow
-          # added a THIRD line to test the workflow
-          # added a FOURTH line to test the workflow
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: dev1
+          target_branch: main
+          title: "Auto PR: Merge dev1 to main"
+          body: "This PR merges changes from dev1 into main automatically."
