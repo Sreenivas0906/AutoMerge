@@ -1,29 +1,37 @@
-name: Auto PR from dev1 to main
+name: automergetomain
+
 on:
   push:
     branches:
-      - dev1
+      - test1603
   workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
-  create-pr:
+  auto-pr-and-merge:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout dev1 branch
+      - name: checkout dev1 branch
         uses: actions/checkout@v4
         with:
-          ref: dev1
-
-      - name: Create PR to main
+          ref: test123
+          fetch-depth: 0
+      - name: create pr from dev1 to main
+        id: create_pr
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: dev1
+          github_token: ${{ secrets.github_token }}
+          source_branch: test1603
           destination_branch: main
-          pr_title: "Auto PR: Merge dev1 into main"
-          pr_body: "This PR was created automatically by GitHub Actions."
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-#added one line of code
+          pr_title: "auto pr: merge dev1 into main"
+          pr_body: "this pr was created automatically by github actions."
+      - name: auto merge the pull request
+        if: steps.create_pr.outputs.pr_number != ''
+        run: |
+          echo "pr number is: ${{ steps.create_pr.outputs.pr_number }}"
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin --delete-branch
+        env:
+          gh_token: ${{ secrets.github_token }}
