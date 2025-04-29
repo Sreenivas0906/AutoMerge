@@ -37,3 +37,4 @@ jobs:
           gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# added a new line
