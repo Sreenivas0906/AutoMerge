@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto-pr-and-merge:
+  auto-pr:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,10 +31,13 @@ jobs:
           pr_title: "Auto PR: Merge dev1 into main"
           pr_body: "This PR was created automatically by GitHub Actions."
 
-      - name: Auto merge the pull request
+      - name: Enable auto-merge on PR
         if: steps.create_pr.outputs.pr_number != ''
         run: |
-          echo "PR number is: ${{ steps.create_pr.outputs.pr_number }}"
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin --delete-branch
+          echo "Enabling auto-merge for PR #${{ steps.create_pr.outputs.pr_number }}"
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --auto --merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+          # added one line of code
