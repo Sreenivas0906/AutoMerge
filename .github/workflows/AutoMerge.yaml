@@ -38,6 +38,8 @@ jobs:
           pr_title: "Auto PR: Merge uat into main"
           pr_body: "This PR was created automatically by GitHub Actions."
 
+          # added one more line to check if the PR already exists
+
       # - name: Auto merge the pull request
       #   if: steps.create_pr.outputs.pr_number != ''
       #   run: |
