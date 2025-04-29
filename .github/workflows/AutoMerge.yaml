@@ -13,30 +13,30 @@ permissions:
 jobs:
   auto-pr-and-merge:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the branch
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Get current branch name
-        id: vars
-        run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+        id: get_branch
+        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-      - name: Create PR from branch to main
-        id: create_pr
-        uses: repo-sync/pull-request@v2
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: ${{ steps.vars.outputs.branch_name }}
-          destination_branch: main
-          pr_title: "Auto PR: Merge ${{ steps.vars.outputs.branch_name }} into main"
-          pr_body: "Automatically created PR from ${{ steps.vars.outputs.branch_name }} to main."
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          head: ${{ steps.get_branch.outputs.branch_name }}
+          title: "Auto PR: Merge ${{ steps.get_branch.outputs.branch_name }} to main"
+          body: |
+            This PR is automatically created from branch ${{ steps.get_branch.outputs.branch_name }} to main.
 
-      - name: Auto merge pull request
-        if: steps.create_pr.outputs.pr_number != ''
+      - name: Auto-merge pull request
+        if: steps.cpr.outputs.pull-request-number != ''
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin
+          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --merge --admin
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
