@@ -45,3 +45,5 @@ jobs:
           gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # added one line for testing purpose
