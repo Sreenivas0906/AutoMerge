@@ -5,7 +5,7 @@ on:
     branches:
       - uat
     paths:
-      - './github/workflows/AutoMerge.yaml'
+      - '.github/workflows/AutoMerge.yaml'
   workflow_dispatch:
 
 permissions:
