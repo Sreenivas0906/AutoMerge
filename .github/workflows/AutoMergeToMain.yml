@@ -18,7 +18,7 @@ jobs:
       - name: Checkout dev1 branch
         uses: actions/checkout@v4
         with:
-          ref: test1603
+          ref: test123
           fetch-depth: 0
 
       - name: Create PR from dev1 to main
