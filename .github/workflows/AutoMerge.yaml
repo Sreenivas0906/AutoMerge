@@ -38,24 +38,16 @@ jobs:
           pr_title: "Auto PR: Merge uat into main"
           pr_body: "This PR was created automatically by GitHub Actions."
 
-      - name: Approve a PR
-        run: gh pr review --approve "$PR_URL"
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+            PR_NUMBER=$(gh pr list --head uat --base main --json number -q '.[0].number')
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          
-      - name: Enable auto-merge for Dependabot PRs
-        run: gh pr merge --auto --rebase "$PR_URL"
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Check if PR is mergeable and enable auto-merge
+        run: |
+            gh pr merge ${{ steps.get_pr_number.outputs.pr_number }} --auto --merge
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-   
-      # - name: Auto merge the pull request
-      #   if: steps.create_pr.outputs.pr_number != ''
-      #   run: |
-      #     echo "PR number is: ${{ steps.create_pr.outputs.pr_number }}"
-      #     gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
