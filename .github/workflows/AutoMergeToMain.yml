@@ -26,3 +26,5 @@ jobs:
           pr_title: "Auto PR: Merge dev1 into main"
           pr_body: "This PR was created automatically by GitHub Actions."
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # added extra lines to the PR body
