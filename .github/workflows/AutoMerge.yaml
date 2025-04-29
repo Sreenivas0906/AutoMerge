@@ -1,0 +1,42 @@
+name: AutoMergeToMain
+
+on:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-pr-and-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current branch name
+        id: vars
+        run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+
+      - name: Create PR from branch to main
+        id: create_pr
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: ${{ steps.vars.outputs.branch_name }}
+          destination_branch: main
+          pr_title: "Auto PR: Merge ${{ steps.vars.outputs.branch_name }} into main"
+          pr_body: "Automatically created PR from ${{ steps.vars.outputs.branch_name }} to main."
+
+      - name: Auto merge pull request
+        if: steps.create_pr.outputs.pr_number != ''
+        run: |
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
