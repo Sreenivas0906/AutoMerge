@@ -38,15 +38,16 @@ jobs:
           pr_title: "Auto PR: Merge uat into main"
           pr_body: "This PR was created automatically by GitHub Actions."
 
-      - name: Auto merge the pull request
-        if: steps.create_pr.outputs.pr_number != ''
+      - name: Get PR number
+        id: get_pr_number
         run: |
-          echo "PR number is: ${{ steps.create_pr.outputs.pr_number }}"
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin
+            PR_NUMBER=$(gh pr list --head uat --base main --json number -q '.[0].number')
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          # added one line for testing purpose
-          # added second line for testing purpose
-          # added third line for testing purpose
-          # added fourth line for testing purpose
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Check if PR is mergeable and enable auto-merge
+        run: |
+            gh pr merge ${{ steps.get_pr_number.outputs.pr_number }} --auto --merge
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
