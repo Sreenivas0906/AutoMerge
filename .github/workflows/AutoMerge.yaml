@@ -15,28 +15,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the branch
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Get current branch name
         id: vars
-        run: echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-      - name: Create PR from branch to main
+      - name: Set up GitHub CLI
+        run: gh auth status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Request with GitHub CLI
         id: create_pr
-        uses: repo-sync/pull-request@v2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_branch: ${{ steps.vars.outputs.branch_name }}
-          destination_branch: main
-          pr_title: "Auto PR: Merge ${{ steps.vars.outputs.branch_name }} into main"
-          pr_body: "Automatically created PR from ${{ steps.vars.outputs.branch_name }} to main."
-
-      - name: Auto merge pull request
-        if: steps.create_pr.outputs.pr_number != ''
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --merge --admin
+          echo "Creating PR from ${{ steps.vars.outputs.branch_name }} to main..."
+          gh pr create --base main --head ${{ steps.vars.outputs.branch_name }} \
+            --title "Auto PR: Merge ${{ steps.vars.outputs.branch_name }} to main" \
+            --body "Automatically created PR from branch to main." || echo "PR may already exist."
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge Pull Request
+        run: |
+          pr_number=$(gh pr list --head ${{ steps.vars.outputs.branch_name }} --json number -q '.[0].number')
+          if [[ -n "$pr_number" ]]; then
+            echo "Merging PR #$pr_number..."
+            gh pr merge $pr_number --merge --admin
+          else
+            echo "No PR found to merge."
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
