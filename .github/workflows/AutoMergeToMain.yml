@@ -2,7 +2,7 @@ name: Auto PR from dev1 to main
 on:
   push:
     branches:
-      - dev1
+      - test123
   workflow_dispatch:
 
 permissions:
@@ -16,15 +16,15 @@ jobs:
       - name: Checkout dev1 branch
         uses: actions/checkout@v4
         with:
-          ref: dev1
+          ref: test123
 
       - name: Create PR to main
         uses: repo-sync/pull-request@v5
         with:
-          source_branch: dev1
+          source_branch: test123
           destination_branch: main
           pr_title: "Auto PR: Merge dev1 into main"
           pr_body: "This PR was created automatically by GitHub Actions."
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-          
+
